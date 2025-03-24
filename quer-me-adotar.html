@@ -1,0 +1,625 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quer me adotar</title>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Sansita">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Radley">
+	<link rel="stylesheet" type="text/css" href="quer-me-adotar.css" media="all">
+	<link rel="icon" type="image/x-icon" href="images/patinha-icone.ico">
+</head>
+<body>
+	<script>
+let currentIndex = 0;
+const startPageIndex = 5; // Índice da div onde o volume começa a aparecer
+
+function changeContent(direction) {
+    const contents = document.querySelectorAll('.content');
+    const audios = document.querySelectorAll('audio');
+    const volumeBtn = document.getElementById('volumeBtn');
+
+    // Calcula o próximo índice
+    const nextIndex = currentIndex + direction;
+
+    // Bloqueia navegação fora dos limites
+    if (nextIndex < 0 || nextIndex >= contents.length) {
+        return; // Impede a navegação além das páginas disponíveis
+    }
+
+    // Pausar todos os áudios e resetar o tempo
+    audios.forEach(audio => {
+        audio.pause();
+        audio.currentTime = 0;
+    });
+
+    // Atualizar visibilidade das divs
+    contents[currentIndex].classList.remove('active');
+    currentIndex = nextIndex;
+    contents[currentIndex].classList.add('active');
+
+    // Reproduzir áudio da nova div
+    const newAudio = contents[currentIndex].querySelector('audio');
+    if (newAudio) {
+        newAudio.play();
+    }
+
+    // Atualizar número da página
+    updatePageNumber();
+
+    // Exibir ou ocultar o botão de volume
+    if (currentIndex >= startPageIndex) {
+        volumeBtn.style.display = 'block'; // Exibe o botão
+    } else {
+        volumeBtn.style.display = 'none'; // Oculta o botão
+    }
+
+    updateButtons(currentIndex, contents.length);
+}
+
+
+function updatePageNumber() {
+    const pageElement = document.getElementById('page-number');
+    if (currentIndex >= startPageIndex) {
+        pageElement.innerText = currentIndex - startPageIndex + 1;
+    } else {
+        pageElement.innerText = '';
+    }
+}
+
+function updateButtons(index, total) {
+    document.getElementById('prevBtn').disabled = index === 0;
+    document.getElementById('nextBtn').disabled = index === total - 1;
+}
+
+function toggleMute() {
+    const audios = document.querySelectorAll('audio');
+    const volumeIcon = document.getElementById('volumeIcon');
+    const activeContent = document.querySelector('.content.active'); // Div ativa
+    const activeAudio = activeContent ? activeContent.querySelector('audio') : null;
+
+    // Verifica o estado atual do primeiro áudio
+    const isMuted = audios[0].muted;
+
+    if (isMuted) {
+        // Caso desmute, reinicia e toca apenas o áudio da div ativa
+        audios.forEach(audio => {
+            audio.muted = false; // Desmuta o áudio
+        });
+
+        if (activeAudio) {
+            activeAudio.currentTime = 0; // Reinicia o áudio ativo
+            activeAudio.play(); // Reproduz novamente
+        }
+
+        volumeIcon.src = "images/volume-on.png"; // Caminho para a imagem de volume ativo
+        volumeIcon.alt = "Volume Ativo";
+    } else {
+        // Caso mute, pausa todos os áudios
+        audios.forEach(audio => {
+            audio.pause(); // Pausa o áudio
+            audio.muted = true; // Muta o áudio
+        });
+
+        volumeIcon.src = "images/volume-off.png"; // Caminho para a imagem de volume mutado
+        volumeIcon.alt = "Volume Mutado";
+    }
+}
+
+// Inicialização
+document.addEventListener('DOMContentLoaded', () => {
+    const contents = document.querySelectorAll('.content');
+    const audios = document.querySelectorAll('audio');
+
+    contents[currentIndex].classList.add('active');
+    audios[currentIndex].play();
+
+    updateButtons(currentIndex, contents.length);
+    updatePageNumber();
+
+    const volumeBtn = document.getElementById('volumeBtn');
+    volumeBtn.style.display = currentIndex >= startPageIndex ? 'block' : 'none';
+});
+
+
+
+function gotoDiv(id) {
+	const target = document.getElementById("div" + id);
+	if (target) {
+		document.querySelectorAll('.content').forEach(div => {
+			div.classList.remove('active');
+		});
+
+		target.classList.add('active');
+
+		document.querySelectorAll('audio').forEach(audio => {
+			audio.pause();
+			audio.currentTime = 0;
+		});
+		const audio = target.querySelector('audio');
+		if (audio) {
+			audio.play();
+		}
+
+		currentIndex = id;
+
+		updatePageNumber();
+		updateButtons(currentIndex, document.querySelectorAll('.content').length);
+
+		target.scrollIntoView();
+	}
+}
+</script>
+<div class="container">
+    <!-- volume e número da página -->
+    <div id="top-bar">
+		<button id="volumeBtn" onclick="toggleMute()">
+			<img id="volumeIcon" src="images/volume-on.png" alt="ícone de áudio para desabilitar o som.">
+		</button>
+		<div id="page-number">1</div>
+	</div>
+	
+    <!-- Divisões com conteúdo -->
+    <div id="div0" class="content active">
+		<img src="images/capa.png" class="capa" alt="Desenho de um cachorro sentado no chão. Atrás dele tem duas crianças: a menina segura um pássaro verde e o menino, um gato laranja.">
+		<audio id="audio0" src=""></audio>
+    </div>
+
+     <div id="div1" class="content">
+		<h2>QUER ME ADOTAR?</h2>
+        <h3>Autor</h3>
+		<p class="creditos">Flávio Colombini</p>
+		<h3>Publicação Original</h3>
+		<p class="creditos">Ideias Brilhantes Editora</p>
+		<h3>Realização</h3>
+		<p class="creditos">Projeto de Extensão Léia<br>
+		Universidade Federal de Pelotas</p>
+		<h5>Contatos do autor</h5>
+		<p class="creditos-16">Site: <a href="https://www.flaviocolombini.com/">www.flavito.com.br</a><br>
+		Redes sociais: @flaviocolombini</p>
+		<h5>Site do Projeto Léia</h5>
+		<p class="creditos-16"><a href="https://wp.ufpel.edu.br/projetoleia/">wp.ufpel.edu.br/projetoleia</a></p>
+		<img src="images/logo-ideias-brilhantes-marrom.png" alt="Logo da editora Ideias Brilhantes.">
+		<img src="images/logo-ufpel-marrom.png" alt="Logo da Universidade Federal de Pelotas.">
+		<img src="images/logo-ca-marrom.png" alt="Ícone do Centro de Artes da UFPel.">
+		<audio id="audio0" src=""></audio>
+    </div>
+	
+	<div id="div2" class="content">
+        <h4>Equipe:</h4>
+		<h4>Coordenação</h4>
+		<p class="creditos">Carolina Bravo Pillon</p>
+		<h4>Diagramação</h4>
+		<p class="creditos">Alice Andrade Kosby<br>
+		Ana Júlia dos Santos Vianna</p>
+		<h4>Ilustrações</h4>
+		<p class="creditos">Jean Pierre Vaz Dias<br>
+		Débora Bianca Taveira de Moura<br>
+		Náthely Santana<br>
+		Geovanna Cardoso Baptistone<br>
+		Giovanna Rodrigues<br>
+		Roger da Silva de Matos</p>
+		<audio id="audio0" src=""></audio>
+	</div>
+	
+	<div id="div3" class="content">
+		<h4>Desenvolvedores</h4>
+		<p class="creditos">João Pedro Alcalde Guimarães<br>
+		Mariana Teixeira de Ferreira</p>
+		<h4>Animações</h4>
+		<p class="creditos">Náthely Santana</p>
+		<h4>Site</h4>
+		<p class="creditos">Camille de Avila Voigt<br>
+		Érica Camelatto Machado</p>
+		<h4>Narração</h4>
+		<p class="creditos">Guilherme Reinhardt Ugoski</p>
+		<h4>Produção</h4>
+		<p class="creditos">Emilly Braga Mercês<br>
+		Isabel Rodrigues Da Fonseca Haro<br>
+		Vitória Vieira Dos Santos</p>
+		<audio id="audio0" src=""></audio>
+	</div>
+	
+		<div id="div4" class="content">
+		<h4>Sobre o projeto de extensão</h4>
+		<p>O objetivo desse projeto de extensão é, especialmente, estimular o hábito da leitura entre as crianças que vivem no abrigo, bem como capacitar os alunos no desenvolvimento de livros digitais interativos. O autor, Flavio Colombini, gentilmente nos cedeu a primeira parte da obra “Quer me adotar?” para que pudéssemos elaborar uma versão interativa do livro. Esse livro foi desenvolvido em um contexto acadêmico e apenas com fins educativos - não comerciais.</p>
+		<p>A obra completa do autor pode ser acessada no link: <a href="https://www.flaviocolombini.com/">https://www.flaviocolombini.com/.</a></p>
+		<p>Links dos livros do autor:</p>
+		<ul class="lista">
+		<li><a href="https://www.flaviocolombini.com/quer-me-adotar">Quer me adotar?</a></li>
+		<li><a href="https://www.flaviocolombini.com/a-pequena-lagarta">A pequena lagarta</a></li>
+		<li><a href="https://www.flaviocolombini.com/boa-noite-zoologico">Boa noite, zoológico</a></li>
+		<li><a href="https://www.flaviocolombini.com/de-onde-vem-a-alegria">De onde vem a alegria?</a></li>
+		</ul>
+		<audio id="audio0" src=""></audio>
+	</div>
+	
+	<div id="div5" class="content">
+		<h2>Sumário</h2>
+		<p><a href="#div6" onclick="gotoDiv(6)">Capítulo 1</a></p>
+		<p><a href="#div9" onclick="gotoDiv(9)">Capítulo 2</a></p>
+		<p><a href="#div13" onclick="gotoDiv(13)">Capítulo 3</a></p>
+		<p><a href="#div18" onclick="gotoDiv(18)">Capítulo 4</a></p>
+		<p><a href="#div24" onclick="gotoDiv(24)">Capítulo 5</a></p>
+		<p><a href="#div27" onclick="gotoDiv(27)">Capítulo 6</a></p>
+		<p><a href="#div32" onclick="gotoDiv(32)">Capítulo 7</a></p>
+		<audio id="audio0" src=""></audio>
+	</div>
+	
+
+    <div id="div6" class="content">
+		<h2 class="capitulos">Capítulo 1</h2>
+        <p>Uma linda cadela, chamada Mel, teve cinco filhotinhos. Eu era um deles. Recebi o nome de Toby.</p>
+        <p>Quando mamãe se deitava para nos alimentar, meus irmãos sempre conseguiam mamar antes de mim, e eu ficava por último.</p>
+        <img src="images/ilus-01-pt-01.png" class="ilustracao" alt="Desenho de uma parede com um quadro pendurado. Nele, há uma imagem de paisagem com um gramado e montanhas ao fundo.">
+		<p>Daí eles pegavam logo no sono, e eu ficava com a mamãe só pra mim, até que eu também dormia.</p>
+        <audio id="audio1" src="audios/pagina-1-quer-me-adotar.mp3"></audio>
+    </div>
+
+    <div id="div7" class="content">
+        <p>Os donos da minha mãe não tinham condições de ficar com os filhotes.</p> 
+        <p>Ofereceram a gente para parentes, amigos e conhecidos, mas ninguém queria adotar cachorrinhos.</p>
+		<img src="images/ilus-01-pt-02.png" class="ilustracao" alt="Desenho da mãe do Toby deitada no chão e amamentando três filhotinhos. Toby está deitado no primeiro plano. Ele é um cachorrinho preto.">
+        <p>Só depois de tentarem muito é que conseguiram doar dois filhotes. Mas ainda sobraram três: eu e meus irmãos Bob e Teca.</p>
+
+        <audio id="audio2" src="audios/pagina-2-quer-me-adotar.mp3"></audio>
+    </div>
+
+    <div id="div8" class="content">
+        <p>Quando crescemos um pouquinho, decidiram nos levar embora. Foi triste ter que me despedir da minha mãe tão cedo na vida.</p> 
+		<p>"Tchau, mamãe!</p> 
+		<img src="images/ilus-02.png" class="ilustracao" alt="Mulher leva os filhotinhos em uma caixa. A mãe de Toby observa sentada ao fundo na cena.">
+		<p> Para onde será que iriam nos levar?</p>
+        <audio id="audio3" src="audios/pagina-3-quer-me-adotar.mp3"></audio>
+    </div>
+	
+	<div id="div9" class="content">
+		<h2 class="capitulos">Capítulo 2</h2>
+		<p>Fomos deixados num lugar chamado Lar Animal. Era um abrigo para bichos e um centro de adoção.  Colocaram a gente num espaço pequeno e fechado. Logo sentimos falta da mamãe.</p>
+		<p>Não tínhamos mais o colo quentinho dela pra dormir, as tetas dela para  nos amamentar, a língua dela para nos acariciar, nem o amor dela pra nos confortar. Aprendemos a tomar leite frio numa tigela e a cuidar uns dos outros.</p>
+        <img src="images/ilus-03-pt-01.png" class="ilustracao"/>
+        <audio id="audio4" src="audios/pagina-4-quer-me-adotar.mp3" alt="Desenho de uma cobra enrolada, um cachorro com manchas em tom de bege e um papagaio."></audio>
+    </div>
+	
+	<div id="div10" class="content">
+		<p>No abrigo, havia muitos animais. Tinha cachorros, que latiam alto. Tinha gatos, que miavam. Pássaros, que cantavam. Um galo, que cocoricava. Um papagaio, que gritava. Tinha também animais silenciosos como coelhos, hamsters, porquinhos-da-índia, uma tartaruga e até uma cobra. Num aquário, havia alguns peixes.</p>
+		<p>Cada animal tinha sua história. O cachorro Pingo tinha se perdido dos donos. O gato Lalau tinha fugido de casa.</p>
+        <img src="images/ilus-03-pt-02.png" class="ilustracao"/>
+        <audio id="audio5" src="audios/pagina-5-quer-me-adotar.mp3" alt="Desenho do Toby com os seus dois irmãos observando os outros animais."></audio>
+    </div>
+	
+	<div id="div11" class="content">
+		<p>O galo era colocado em rinhas (brigas de galos) e já tinha se machucado bastante.</p>
+		<p>O antigo dono do papagaio perdeu a guarda dele porque o levava pra beber pinga no bar e lhe ensinava a falar palavrões para rir com os amigos. Outros bichos tinham sido abandonados ou sofrido negligência ou maus-tratos. Mas a maioria dos animais era como nós, que estávamos ali só porque nossos donos não tinham mais condições de ficar com a gente.</p>
+        <img src="images/ilus-03-pt-03.png" class="ilustracao" alt="Desenho de uma tartaruga, um gato e um galo.">
+        <audio id="audio6" src="audios/pagina-6-quer-me-adotar.mp3"></audio>
+    </div>
+	
+	<div id="div12" class="content">
+		<p>O centro de adoção recebia visitas de pessoas interessadas em adotar algum bichinho de estimação. Quando um visitante aparecia, todos os animais ficavam alvoroçados, tentando ser simpáticos, na esperança de chamar a atenção dos visitantes. Assim, tinham mais chances de serem adotados.</p>
+		<p>O dono do abrigo se chamava Alberto. Ele sustentava o local sozinho, com ajuda de doações. Mas estava sempre lamentando a falta de dinheiro. Vários voluntários o ajudavam a cuidar dos animais. Eles nos davam comida, limpavam nosso cocô e xixi, nos davam banho uma vez por semana e até nos davam carinho, quando sobrava um tempinho.</p>
+		<p>À noite, o local ficava mais triste. Os funcionários iam embora e deixavam os animais sozinhos. Alguns cães choravam e uivavam de tristeza.</p>
+        <audio id="audio7" src="audios/pagina-7-quer-me-adotar.mp3"></audio>
+    </div>
+	
+	<div id="div13" class="content">
+		<h2 class="capitulos">Capítulo 3</h2>
+		<p>No segundo dia em que estávamos lá, uma mãe e sua filha vieram e ficaram olhando alegres para mim. Fiquei feliz com a atenção. Abanei meu rabinho e fiz uma gracinha. Elas sorriram. Será que iriam me adotar? A mulher falou com o voluntário do abrigo e apontou para o lugar em que eu estava. O moço a acompanhou e perguntou à menina:
+		<p>— Qual você vai querer?</p>
+		<p>A garota apontou para mim.</p>
+		<img src="images/ilus-04-pt-01.png" class="ilustracao" alt="Desenho de Toby e dois irmãos em um cercado olhando para a menina e sua mãe.">
+        <audio id="audio8" src="audios/pagina-8-quer-me-adotar.mp3"></audio>
+    </div>
+	
+	<div id="div14" class="content">
+		<p>A mãe dela, porém, falou:</p>
+		<p>— Não, o pretinho não!</p>
+		<p>— Mas eu gostei dele... — insistiu a filha.</p>
+		<p>A mãe não lhe deu ouvidos e falou para o voluntário:</p>
+		<p>— Vamos levar o cinza-claro.</p>
+		<p>Ela apontou para meu irmão, Bob. O moço o pegou e entregou à menina.</p>
+		<img src="images/ilus-04-pt-02.png" class="ilustracao" alt="Desenho da menina de mãos dadas com a mãe. A menina aponta para os filhotinhos no cercado.">
+        <audio id="audio9" src="audios/pagina-9-quer-me-adotar.mp3"></audio>
+    </div>
+	
+	<div id="div15" class="content">
+		<p>Ela hesitou, mas pegou o filhote nas mãos e abriu um sorriso, mostrando que estava feliz. Eu fiquei triste, pois não fui adotado e ainda perdi meu irmão. Não tive nem tempo de me despedir dele.</p>
+		<p>Agora só sobramos Teca  e eu. Nós comíamos bem e brincávamos bastante um com o outro. Mas isso era tudo que podíamos fazer naquele lugarzinho, que foi ficando cada vez mais apertado, conforme a gente crescia. Teca queria que uma família adotasse nós dois juntos, pra gente nunca se separar.</p>
+		<p>Um dia, chegou um pai, uma mãe e um filho. Ficaram olhando todos os cachorros e pararam na gente. Ficamos felizes e esperançosos. Latimos, pulamos, fizemos festa pra eles. Até que o garoto tomou uma decisão e apontou para minha irmã. O funcionário a pegou e a deu para o menino sorridente. Teca olhava pra mim com dúvida.</p>
+        <audio id="audio10" src="audios/pagina-10-quer-me-adotar.mp3"></audio>
+    </div>
+	
+	<div id="div16" class="content">
+		<p>Não sabia se ficava feliz por estar sendo adotada, ou se ficava triste por se separar de mim. Quando a levaram, eu lati, dizendo pra ela ficar feliz.</p>
+		<p>Eu não tinha dúvida. Estava triste. Não fui adotado e ainda fiquei sem meus irmãos. Estava sozinho. E agora, o que seria de mim?</p>
+		<p>Naquela noite, eu chorei. Quando os outros cães ouviram meu lamento, começaram a chorar também, pra me fazer companhia.</p>
+		<img src="images/ilus-05.png" class="ilustracao" alt="Desenho do rosto de cinco cachorros uivando. Sai uma lágrima dos olhos de um deles.">
+        <audio id="audio11" src="audios/pagina-11-quer-me-adotar.mp3"></audio>
+    </div>
+	
+	<div id="div17" class="content">
+		<p>Senti-me confortado por receber o apoio deles. Os humanos não me queriam, meus irmãos se foram, mas, naquele momento, percebi que tinha muitos amigos naquele abrigo e podia contar com eles.</p>
+		<p>Por que será que ninguém queria me adotar? Quando aparecia um visitante, eu tentava ser simpático, deixava a pessoa me acariciar, lambia  a mão dela, fazia cara de coitadinho. Mas nada dava certo. O que havia  de errado comigo?</p>
+		<p>Com o tempo, muitas pessoas foram passando por lá, para adotar um bichinho ou para trazer um animal que precisava de adoção.</p>
+		<p>Até que eu cresci. O dono do abrigo comentou:</p>
+		<p>— Que pena que ele não foi adotado ainda filhote! Quando já está adulto, é bem mais difícil. Além disso, tem gente que não gosta de cães e gatos pretos.</p>
+        <audio id="audio12" src="audios/pagina-12-quer-me-adotar.mp3"></audio>
+    </div>
+	
+	<div id="div18" class="content">
+		<h2 class="capitulos">Capítulo 4</h2>
+		<p>Um dia, chegou lá uma cadela, chamada Lucy, que tinha sido atropelada e perdido o movimento das patas de trás. Ela estava muito abalada. Seu Alberto pegou as rodas de uma bicicleta infantil descartada e construiu um andador para Lucy, que ficou toda feliz em poder caminhar de novo.</p>
+		<img src="images/ilus-06.png" class="ilustracao" alt="Desenho da cachorrinha Lucy com um andador feito com rodas de bicicleta infantil.">
+		<p>Ela chamava a atenção dos visitantes e, em pouco tempo, já foi adotada. Confesso que senti uma pontinha de inveja dela pela adoção rápida, enquanto eu esperava, esperava...</p>
+		<audio id="audio13" src="audios/pagina-13-quer-me-adotar.mp3"></audio>
+    </div>
+	
+	<div id="div19" class="content">
+		<p>Tinha uma menina, chamada Clara, que morava na mesma rua e costumava visitar o abrigo. Ela amava animais, mas seus pais não a deixavam ter um, porque a casa em que moravam era pequena. Já que não podia adotar um, resolveu ajudar a todos e se tornou voluntária no abrigo. Ela sempre perguntava ao seu Alberto como podia ajudar.</p>
+		<p>Ele indicou um cão, chamado Bento. Ele apanhara muito do antigo dono, que perdeu a guarda do animal devido aos maus-tratos. Só que agora Bento tinha medo de seres humanos. Quando alguém chegava perto, ele se afastava e se encolhia no canto, tremendo de medo.</p>
+		<p>Então Clara teve uma ideia. Ela tinha na mochila um livro infantil, que havia pego emprestado na biblioteca da escola. Sentou-se perto do cão e começou a ler a história para ele em voz alta.</p>
+		<audio id="audio14" src="audios/pagina-14-quer-me-adotar.mp3"></audio>
+    </div>
+	
+	<div id="div20" class="content">
+		<img src="images/ilus-07.png" class="ilustracao" alt="Desenho da menina Clara Lendo um livro com a capa vermelho para o cachorrinho Bento.">
+		<p>Isso ajudou Clara a praticar, pois ela tinha dificuldade de leitura. Aos poucos, Bento foi se acostumando com a pre-sença da garota e perdendo o medo dos humanos. Os dois foram beneficiados com essa troca.</p>
+		<p>Clara ficou minha amiga também e, sempre que chegava no abrigo, me acariciava e conversava comigo.</p>
+		<p>Uma vez, dois jovens mal-encarados pararam na frente do Lar Animal. </p>
+		<audio id="audio15" src="audios/pagina-15-quer-me-adotar.mp3"></audio>
+    </div>
+	
+	<div id="div21" class="content">
+		<p>Reparei que um deles tinha uma cicatriz de queimadura na mão direita. Eles olhavam atentamente uma senhora que estava visitando o abrigo e tirava fotos de vários animais com um telefone celular bonito.</p>
+		<p>Quando ela saiu, ficou parada na porta com o celular na mão. Um dos jovens fechou a cara, atravessou a rua e caminhou em direção a ela. Eu achei suspeita aquela atitude e comecei a latir bem alto.</p>
+		<img src="images/ilus-08.png" class="ilustracao" alt="Desenho de uma mulher segurando um celular. Toby espanta dois jovens.">
+		<audio id="audio16" src="audios/pagina-16-quer-me-adotar.mp3"></audio>
+    </div>
+	
+	<div id="div22" class="content">
+		<p>Quando o moço ia pegar o celular da senhora, assustou-se com meu latido e hesitou.</p>
+		<p>A mulher percebeu o perigo, guardou o celular na bolsa e entrou de volta no abrigo.</p>
+		<p>Os jovens se afastaram. Clara viu a cena e foi falar com a mulher:</p>
+		<p>— A senhora chamou um táxi? É melhor esperar aqui dentro. Tem dois caras que costumam roubar celulares aí na rua.
+		<p>Depois, a menina veio falar comigo:</p>
+		<p>— Obrigada, Toby, por assustar os ladrões! Você acredita que eles costumam ficar parados na frente da minha janela, fumando um cigarro fedido e falando besteira?</p>
+		<p>— Ela franziu a testa e concluiu: — Não gosto deles!</p>
+		<audio id="audio17" src="audios/pagina-17-quer-me-adotar.mp3"></audio>
+    </div>
+	
+	<div id="div23" class="content">
+		<p>Certa vez, uma pessoa adotou todos os peixes do aquário, mas deixou só um, que tinha uma nadadeira defeituosa. O apelido dele era Velhinho. Ele ficou morando sozinho no aquário. Às vezes trocávamos olhares. Eu sentia dó de vê-lo tão solitário.</p>
+		<p>Chegou uma hora em que eu fiquei cansado de morar num espaço tão apertado. Mas não podia fazer nada pra mudar minha situação. Só podia sonhar. Desejava tanto ter um dono pra me dar carinho, brincar comigo, me levar pra passear e correr num lugar amplo. Queria ser amado, livre e feliz. Será que isso era pedir demais?</p>
+		<audio id="audio18" src="audios/pagina-18-quer-me-adotar.mp3"></audio>
+    </div>
+	
+	<div id="div24" class="content">
+		<h2 class="capitulos">Capítulo 5</h2>
+		<p>Num belo dia, finalmente chegou a minha vez. Um casal de idosos apareceu e gostou de mim. Eles resolveram me adotar! Mal podia acreditar que meu sonho estava sendo realizado!</p>
+		<img src="images/ilus-09.png" class="ilustracao" alt="Uma senhora de camisa verde segura Toby no colo. Do seu lado, está um senhor com uma camisa azul clara.">
+		<audio id="audio19" src="audios/pagina-19-quer-me-adotar.mp3"></audio>
+    </div>
+	
+	<div id="div25" class="content">
+		<p>Eles me levaram para a casa deles. Era um lugar lindo e espaçoso. Eu fiquei tão feliz que mal podia me conter.  Saí correndo pela casa e fui pro quintal. Fiz xixi nas plantas, depois cavouquei o chão com as patas traseiras. Que delícia ter tanto espaço pra brincar! Sem querer, derrubei um vaso, que caiu no chão e se quebrou. Em seguida, vi umas roupas penduradas num fio. Pulei e as puxei para o chão para brincar com elas. O casal começou a gritar comigo.</p>
+		<img src="images/ilus-10.png" class="ilustracao" alt="Toby está sentado em um sofá marrom. Ao seu redor, vemos roupas espalhas e um vaso de planta quebrado no chão.">
+		<audio id="audio20" src="audios/pagina-20-quer-me-adotar.mp3"></audio>
+    </div>
+	
+	<div id="div26" class="content">
+		<p>Eles não pareciam muito felizes com aquilo, mas eu estava tão empolgado que não liguei pra opinião deles.</p>
+		<p>Quando os dois saíram para pegar as roupas do chão, eu entrei na casa e inspecionei o local. Achei   um sofá tão fofinho que deu vontade de morder, para ver o sabor que tinha. Não era gostoso, mas era divertido. Continuei brincando ali até que os meus novos donos voltaram. Acho que eles não gostaram de me ver comendo o sofá deles.</p>
+		<p>Na mesma hora, colocaram-me no carro e me levaram de volta pro Lar Animal, onde falaram que  eu não me adaptei à casa deles e que estavam me devolvendo. Fiquei confuso e não consegui entender por que eles não gostaram de mim, se eu gostei tanto deles. Mas, àquela altura, eu não podia fazer mais nada. Lá estava eu, de volta ao meu cubículo de sempre.</p>
+		<audio id="audio21" src="audios/pagina-21-quer-me-adotar.mp3"></audio>
+    </div>
+	
+	<div id="div27" class="content">
+		<h2 class="capitulos">Capítulo 6</h2>
+		<p>Certa vez, ouvi Seu  Alberto mencionar que tinha acabado todo o seu dinheiro. O abrigo estava recebendo pouquíssimas doações. Ele reclamou que o local estava precisando de reformas, principalmente na parte elétrica. Também disse que só tinha ração para aquele dia. No dia seguinte, os animais já não teriam mais  o que comer. Ele estava chateado e sem esperança.</p>
+		<p>Naquela noite, quando todos os bichos estavam dormindo, eu acordei com um barulhinho estranho. Vi uma tomada com uns fios elétricos soltos dando curto- circuito e soltando faíscas. Abaixo dela havia uma pilha de jornais, que eram usados para forrar o chão dos recintos dos animais.</p>
+		<audio id="audio22" src="audios/pagina-22-quer-me-adotar.mp3"></audio>
+    </div>
+	
+	<div id="div28" class="content">
+		<p>De repente, os jornais começaram a pegar fogo. Fiquei preocupado. Se aquelas chamas se espalhassem pelo abrigo, os bichos morreriam queimados.</p>
+		<img src="images/ilus-11.png" class="ilustracao" alt="Desenho do abrigo Lar Animal. Vemos o fogo se alastrando através das janelas de vidro e da porta com uma abertura em vidro.">
+		<p>Todos os animais despertaram e o que fazer. Os cães começaram a latir, os gatos, a miar, e os pássaros, a piar.</p>
+		<p>Eu resolvi agir. Dei um pulo alto e consegui sair do meu cercado.</p>
+		<audio id="audio23" src="audios/pagina-23-quer-me-adotar.mp3"></audio>
+    </div>
+	
+	<div id="div29" class="content">
+		<p>Cheguei perto do fogo e comecei  a latir. Não sabia como apagar aquelas chamas.</p>
+		<p>Foi então que eu olhei para o aquário e tive uma ideia: e se eu conseguisse usar a água do aquário  para apagar o fogo? Daí eu olhei para o peixe solitário. Ele olhou para mim. Senti que ele estava tentando se comunicar comigo. Eu lati dizendo que, se eu jogasse o aquário no fogo, ele iria morrer. Ele me respondeu: "Não se preocupe. Eu já sou velho e vivi bem minha vida. O mais importante é salvar os outros animais".</p>
+		<img src="images/ilus-12.png" class="ilustracao" alt="Toby olhando para o peixe dentro do aquário. Ao redor, vemos o fogo se espalhando no abrigo Lar Animal.">
+		<audio id="audio24" src="audios/pagina-24-quer-me-adotar.mp3"></audio>
+    </div>
+	
+	<div id="div30" class="content">
+		<p>Eu puxei uma cadeira, subi nela e comecei a empurrar  o aquário, mas era muito pesado e mal se movia. Empurrei com mais força, e nada. Depois desci e me afastei. Então corri, peguei impulso, pulei e empurrei com toda a minha força o aquário, que finalmente se moveu e foi para o chão.</p>
+		<p>Caiu com tudo e se quebrou. A água do aquário conseguiu apagar o fogo. Oba! Que ótimo!</p>
+		<p>Mas o fogo já tinha se espalhado por uma cortina.  E agora, o que faço? </p>
+		<img src="images/ilus-13-pt-01.png" class="ilustracao" alt="Desenho de um aquário quebrado. Por essa rachadura, a água está vazando e o peixe está escapando.">
+		<audio id="audio25" src="audios/pagina-25-quer-me-adotar.mp3"></audio>
+    </div>
+	
+	<div id="div31" class="content">
+		<p>Eu pulei alto, agarrei a cortina com minha boca. Ela se soltou e caiu no chão. Eu fiquei arrastando a cortina em chamas pelo chão molhado, até o fogo se apagar por completo. Ufa, finalmente estávamos salvos!</p>
+		<p>Então eu vi o peixe solitário se debatendo no chão. Tive uma ideia. Peguei-o com a boca, coloquei meu focinho pra dentro do recinto do Bento e joguei o peixe na tigela de água que estava ali. Era um espaço apertado, mas pelo menos o peixe continuou vivo.</p>
+		<p>Todos os animais ficaram alegres, me agradeceram e fizeram festa pra mim. Fiquei muito feliz!</p>
+		<img src="images/ilus-13-pt-02.png" class="ilustracao" alt="Desenho da água do aquário sendo derramada sobre as chamas.">
+		<audio id="audio26" src="audios/pagina-26-quer-me-adotar.mp3"></audio>
+    </div>
+	
+	<div id="div32" class="content">
+		<h2 class="capitulos">Capítulo 7</h2>
+		<p>No dia seguinte, quando os voluntários chegaram, me viram fora do meu espaço e ao lado daquela bagunça. Acharam que eu tinha feito tudo aquilo por pura malcriação. Ficaram bravos e me deram uma bronca. Depois, foram olhar a gravação da câmera de segurança e finalmente entenderam o que tinha acontecido.</p>
+		<img src="images/ilus-14.png" class="ilustracao" alt="Desenho de um computador mostrando a filmagem da câmera de segurança. Podemos ver na filmagem o aquário sendo jogado contra o fogo.">
+		<audio id="audio27" src="audios/pagina-27-quer-me-adotar.mp3"></audio>
+    </div>
+	
+	<div id="div33" class="content">
+		<p>Daí eles mudaram completamente de atitude. Ficaram felizes comigo por ter salvado o local de uma tragédia.</p>
+		<p>Publicaram o vídeo do salvamento na internet. Chamou muita atenção. Teve milhões de visualizações. O público ficou sensibilizado com a situação do abrigo e começou a doar dinheiro para ajudar. </p>
+		<p>O Lar Animal recebeu muitas doações. Seu Alberto me abraçou  com força e disse:</p>
+		<p>— Primeiro você nos salvou do incêndio e depois nos salvou da falência! Agora temos dinheiro pra comprar comida pros animais, pagar as dívidas e ainda fazer uma reforma tão necessária.</p>
+		<audio id="audio28" src="audios/pagina-28-quer-me-adotar.mp3"></audio>
+    </div>
+	
+	<div id="div34" class="content">
+		<img src="images/ilus-15.png" class="ilustracao" alt="Desenho do dono do abrigo Lar Animal sentado no chão e abraçando o cachorrinho Toby.">
+		<p>Graças ao vídeo, eu fiquei famoso. Apelidaram-me de Cachorro Bombeiro ou Cão Salvador. Então muitas e muitas pessoas quiseram me adotar.</p>
+		<p>Seu Alberto e os voluntários não sabiam o que fazer com tantos pretendentes. Até que acharam uma solução. Pediram pra que todas as pessoas interessadas em  me adotar fossem a uma praça próxima ao abrigo, no sábado seguinte, às 10 horas da manhã.</p>
+		<audio id="audio29" src="audios/pagina-29-quer-me-adotar.mp3"></audio>
+    </div>
+	
+	<div id="div35" class="content">
+		<p>Apareceu bastante gente, inclusive fotógrafos, cinegrafistas e repórteres de jornais, TVs e outras mídias. O dono do abrigo falou para todos os interessados em me adotar:</p>
+		<p>— Façam uma roda e deixem um espaço no meio.</p>
+		<p>Daí ele me colocou naquele espaço e anunciou:</p>
+		<p>— Vamos deixar o próprio Toby, nosso cachorro herói, escolher quem vai ser o seu dono.</p>
+		<p>Eu fiquei ali no meio, sem saber muito bem o que fazer. Olhei todas as pessoas que estavam à minha volta. Havia homens, mulheres, velhos e crianças. Algumas pessoas cumprimentaram um senhor, chamado Júlio, que parecia muito rico. </p>
+		<audio id="audio30" src="audios/pagina-30-quer-me-adotar.mp3"></audio>
+    </div>
+	
+	<div id="div36" class="content">
+		<p>Reparei também numa mulher vistosa. Ouvi dizerem que o nome dela era Diva, uma atriz famosa, defensora dos animais. Pensei em ir até ela, mas hesitei.</p>
+		<img src="images/ilus-16.png" class="ilustracao" alt="Desenho de um casal em pé olhando para Toby sentado no chão.">
+		<p>Percebi que sentia mais atração pelas crianças. Fiquei olhando cada uma delas. Até que vi um grupo de crianças unidas. Elas me olharam com tanta esperança que, sem pensar, eu fui andando em direção a elas e as deixei me acariciar.</p>
+		<audio id="audio31" src="audios/pagina-31-quer-me-adotar.mp3"></audio>
+    </div>
+	
+	<div id="div37" class="content">
+		<p>Seu Alberto então gritou para todos:</p>
+		<p>— É com alegria que anuncio que as crianças do Centro de Acolhimento Vida Nova vão ganhar a guarda do Toby!</p>
+		<img src="images/ilus-17.png" class="ilustracao" alt="Desenho do Toby sentado no chão com as crianças o abraçando. Um menino está em pé atrás colocando a coleira nele.">
+		<p>Todo mundo gritou de alegria, inclusive eu, que lati alto, vibrando de felicidade por finalmente estar sendo adotado.</p>
+		<audio id="audio32" src="audios/pagina-32-quer-me-adotar.mp3"></audio>
+    </div>
+	
+	<div id="div38" class="content">
+		<p>Voltamos ao Lar Animal, onde me despedi de todos os bichos. Os voluntários me deram um abraço coletivo, e Seu Alberto me disse:</p>
+		<p>— Você foi o cachorro mais especial que já passou pelo nosso abrigo. Obrigado por tudo! E que você seja muito feliz no seu novo lar!</p>
+		<p>Então, fui levado para a minha nova casa. Descobri que as crianças que moravam lá não tinham família, por diversas razões diferentes.</p> 
+		<p>Algumas, os pais tinham falecido, outras tinham sido abandonadas,  ou sofrido maus tratos, ou os pais usavam drogas, ou tinham sido presos... Assim, todas elas vieram parar naquele centro de acolhimento.</p>
+		<audio id="audio33" src="audios/pagina-33-quer-me-adotar.mp3"></audio>
+    </div>
+	
+	<div id="div39" class="content">
+		<p>Achei que aquela era uma grande coincidência. Assim como eu tinha passado muito tempo em um abrigo, esperando para ser adotado, aquelas crianças também estavam na mesma situação, aguardando para serem adotadas ou voltar para a guarda dos pais ou parentes.</p>
+		<p>Eu me apaixonei pelas crianças que me adotaram. Brincávamos juntos o tempo todo. Elas me davam muita atenção e carinho, e eu lhes dava o meu amor. Finalmente meu sonho estava realizado! Fiquei infinitamente feliz!</p>
+		<h2> Fim da parte I</h2>
+		<audio id="audio34" src="audios/pagina-34-quer-me-adotar.mp3"></audio>
+    </div>
+	
+	<div id="div40" class="content">
+		<h2>Desenho para colorir</h2>
+		<p>Chegamos ao fim da nossa história. Que tal imprimir um desenho do Toby para pintar?</p>
+		<p>Toque no botão para baixar e imprimir o desenho para colorir.</p>
+		<img src="images/desenho-pintar.png" class="ilustracao" alt="Desenho da capa com fundo branco e linhas pretas para imprimir e pintar." style="margin-bottom: 16px;">
+		<button class="imprimir"><a href="https://drive.google.com/file/d/1FEW2VtrPQZIs_k9lOmJ67cGGqP_hD71Z/view?usp=drive_link">Baixar</a></button>
+		<audio id="audio0" src=""></audio>
+    </div>
+	
+		<div id="div41" class="content">
+		<h2>Atividade</h2>
+		<p>Vamos decorar e montar uma caixinha para o Toby?</p>
+		<p>Toque no botão para baixar e imprimir atividade.</p>
+		<img src="images/atividade-quer-me-adotar.png" class="ilustracao" alt="Desenho de uma caixa com o cachorrinho Toby em preto e branco para imprimir e montar." style="margin-bottom: 16px;">
+		<button class="imprimir"><a href="https://drive.google.com/file/d/1EyXv5a-oyU-eZ9FZpuu8KNPQgJJQ9YUT/view?usp=drive_link">Baixar</a></button>
+		<audio id="audio0" src=""></audio>
+    </div>
+	
+	<div id="div42" class="content">
+		<h3>Gostou do livro? Leia as outras partes de “Quer me adotar”.</h3>
+		<p>O livro “Quer me adotar?” tem 3 partes. Esse livro contou somente a primeira parte da história. Acesse o link para ler a continuação: <a href="https://www.flaviocolombini.com/quer-me-adotar">https://www.flaviocolombini.com/quer-me-adotar</a></p>
+		<a href="https://www.flaviocolombini.com/quer-me-adotar"><img src="images/quer-me-adotar-original.png" alt="Capa original do livro Quer me adotar?" class="ilustracao" alt="Desenho da capa original do livro ‘Quer me adotar?’. No desenho, vemos Toby em primeiro plano, duas crianças com os animais do abrigo e um vilão no fundo."></a>
+		<audio id="audio0" src=""></audio>
+    </div>
+	
+	<div id="div43" class="content">
+		<h2>Sobre o autor e a equipe</h2>
+		<img src="images/flavio-colombini.png" class="foto" alt="Foto do autor Flávio Colombini.">
+		<p class="sobre-a-equipe"><strong>Flávio Colombini</strong>: Sou formado em Cinema. Comecei escrevendo roteiros, depois migrei para os livros infantis. A ideia para essa história ficou guardada por muito tempo na minha mente. Até que tomei coragem e escrevi o texto inteiro no computador, com muita paciência e carinho. Espero que você tenha gostado do resultado! Na vida real, eu nunca tive um cachorrinho, mas, na imaginação, eu já tenho. Ele se chama Toby e é um herói. Uma versão maior desse livro, com mais aventuras do cachorro Toby, está disponível para ser lida e baixada gratuitamente no meu site <a href="https://www.flavito.com.br">www.flavito.com.br</a>. Lá você também vai poder conhecer os outros livros que escrevi e assistir aos filmes que fiz.</p>
+		<h3> Conheça outros livros do autor: </h3>
+		<a href="https://www.flaviocolombini.com/a-pequena-lagarta"><img src="images/a-pequena-lagarta.png" class="livros" alt="Capa do livro ‘A pequena lagarta’."></a>
+		<a href="https://www.flaviocolombini.com/boa-noite-zoologico"><img src="images/boa-noite-zoologico.png" class="livros" alt="Capa do livro ‘Boa noite, zoológico’."></a>
+		<a href="https://www.flaviocolombini.com/de-onde-vem-a-alegria"><img src="images/de-onde-vem-a-alegria.png" class="livros" alt="Capa do livro ‘De onde vem a alegria?’"></a>
+	</div>
+	
+	<div id="div44" class="content">
+		<img src="images/alice.png" class="foto" height="72px" alt="Foto da participante do projeto Alice Andrade Kosby.">
+		<p class="sobre-a-equipe"><strong>Alice Andrade Kosby</strong>: Estudante de Design Digital na UFPel, atuei no design editorial deste projeto. Como uma leitora ávida desde a infância, é gratificante poder contribuir com uma iniciativa que desperta o interesse pela leitura nas crianças, um hábito que transforma vidas.</p>
+		
+		<img src="images/ana-julia.png" class="foto" alt="Foto da participante do projeto Ana Júlia dos Santos Vianna.">
+		<p class="sobre-a-equipe"><strong>Ana Júlia dos Santos Vianna</strong>: Estudante de Design Digital na UFPEL, sou estagiária na área de design. Atuei no design editorial do livro. Como uma apaixonada por livros e universos literários, foi muito importante e gratificante participar da construção do projeto.</p>
+	
+		<img src="images/camille.png" class="foto" alt="Foto da participante do projeto Camille de Avila Voigt.">
+		<p class="sobre-a-equipe"><strong>Camille de Avila Voigt</strong>: Estudante de Design Digital pela UFPel e estagiária em Product Design. Auxiliei no desenvolvimento da página inicial do site do projeto. É muito gratificante poder contribuir em projetos na graduação que constroem uma relação com a sociedade e que impactam positivamente na realidade das pessoas.</p>
+		<audio id="audio0" src=""></audio>
+	</div>
+
+	<div id="div45" class="content">
+		<img src="images/carolina.png" class="foto" alt="Foto da participante do projeto Carolina Bravo Pillon.">
+		<p class="sobre-a-equipe"><strong>Carolina Bravo Pillon</strong>: Professora nos cursos de Design Gráfico/Digital da UFPel. Coordenadora do projeto de extensão “Desenvolvimento de um portfólio de livros digitais interativos para as crianças abrigadas”. A ideia para criar esse projeto surgiu de um trabalho voluntário que realizei como contadora de histórias em um abrigo. Minha motivação é despertar o interesse pela leitura nas crianças que vivem no abrigo.</p>
+	
+		<img src="images/debora.png" class="foto" alt="Foto da participante do projeto Débora Bianca Taveira de Moura.">
+		<p class="sobre-a-equipe"><strong>Débora Bianca Taveira de Moura</strong>: Estudante de Design Digital pela UFPel, Designer Júnior na Hand Talk e Ilustradora no tempo livre. Fui responsável por criar os conceitos artísticos e rascunho para as ilustrações do projeto. Fico feliz de ser uma dos viabilizadores em tornar a leitura leve e acessível por meio de imagens projeto, pois tenho certeza que ele impactará positivamente as crianças que lerem nosso livro digital.</p>
+		
+		<img src="images/emilly.png" class="foto" alt="Foto da participante do projeto Emilly Braga Mercês.">
+		<p class="sobre-a-equipe"><strong>Emilly Braga Mercês</strong>: Estudante de Design Digital pela UFPel,e ilustradora freelancer, e ajudei com o design editorial das imagens do projeto. Fiquei animada de trabalhar num projeto que incentiva uma das coisas que eu gosto, a leitura, e ajudar a fazer com que esse hábito passe para os outros.</p>
+		<audio id="audio0" src=""></audio>
+	</div>
+		
+	<div id="div46" class="content">
+		<img src="images/erica.png" class="foto" alt="Foto da participante do projeto Érica Camelatto Machado.">
+		<p class="sobre-a-equipe"><strong>Érica Camelatto Machado</strong>: Estudante de Design Digital pela UFPel e também Técnica em Comunicação Visual pelo IFSul, atualmente trabalho com design para redes sociais. Participei do desenvolvimento da lading page deste projeto. Participar deste projeto foi extremamente satisfatório, porque podemos impactar positivamente o desenvolvimento das crianças, estimulando a criatividade e amor pela leitura.</p>
+		
+		<img src="images/giovanna-rodrigues.png" class="foto" alt="Foto da participante do projeto Giovanna Rodrigues.">
+		<p class="sobre-a-equipe"><strong>Giovanna Rodrigues</strong>: Estudante de Cinema de Animação pela UFPEL e Ilustradora de livros infantis. Participo do projeto na finalização das ilustrações. Participar deste projeto é uma experiência muito enriquecedora, pois me permite contribuir de forma positiva para o desenvolvimento das crianças, aproximando-as da arte e incentivando a leitura. .</p>
+		
+		<img src="images/geovanna.png" class="foto" alt="Foto da participante do projeto Geovanna Cardoso Baptistone.">
+		<p class="sobre-a-equipe"><strong>Geovanna Cardoso Baptistone</strong>: Estudante de Design Gráfico pela UFPEL e Ilustradora Freelancer. Sou responsável pela finalização e acabamento das ilustrações do projeto. É uma experiência incrível poder colaborar efetivamente nesse projeto, espero que seu resultado gere um impacto positivo e duradouro no hábito da leitura de muitos jovens.</p>
+		<audio id="audio0" src=""></audio>
+	</div>
+		
+		<div id="div47" class="content">
+		<img src="images/guilherme.png" class="foto" alt="Foto do participante do projeto Guilherme Reinhardt Ugoski.">
+		<p class="sobre-a-equipe"><strong>Guilherme Reinhardt Ugoski</strong>: Estudante de Teatro Licenciatura pela UFPEL, sou dublador/locutor, trabalho fazendo comerciais e dublando em canais do youtube como “Ben Azelart” e “Stokes Twins” e propaganda do jogo Super Mario. Dentro deste projeto fiz a narração do Livro, vozes, sons. Foi bem gratificante fazer esse conteúdo, com a junção de toda a equipe eu não vejo a hora de ver como ficou, e que a comunidade tenha acesso a essa obra.</p>
+		
+		<img src="images/isabel.png" class="foto" alt="Foto da participante do projeto Isabel Rodrigues Da Fonseca Haro.">
+		<p class="sobre-a-equipe"><strong>Isabel Rodrigues Da Fonseca Haro</strong>: Estudante de design digital pela UFPel, fui responsável pela seleção da história para o projeto. É gratificante poder atuar na área do design, desenvolvendo projetos que geram impacto positivo na sociedade. E através deste projeto, poder promover o hábito da leitura entre as crianças, utilizando o design como ferramenta.</p>
+	
+		<img src="images/jean.png" class="foto" alt="Foto do participante do projeto Jean Pierre Vaz Dias.">
+		<p class="sobre-a-equipe"><strong>Jean Pierre Vaz Dias</strong>: Estudante de Design Digital pela Ufpel, e sou responsável pela parte de ilustração do projeto. É muito recompensador poder fazer parte de um projeto que amplia e incentiva a leitura para os mais jovens e espero que esse projeto alcance muitas crianças.</p>
+		<audio id="audio0" src=""></audio>
+	</div>
+		
+		<div id="div48" class="content">
+		<img src="images/joao.png" class="foto" alt="Foto do participante do projeto João Pedro Alcalde Guimarães.">
+		<p class="sobre-a-equipe" style="margin-bottom: 32px"><strong>João Pedro Alcalde Guimarães</strong>: Estudante do curso de Ciências da Computação pela Universidade Federal de Pelotas (UFPel).</p>
+	
+		<img src="images/mariana.png" class="foto" alt="Foto da participante do projeto Mariana Teixeira de Ferreira.">
+		<p class="sobre-a-equipe"><strong>Mariana Teixeira de Ferreira</strong>: Estudante de Design Gráfico pela UFPel, sou formada em TI pelo IFSul e participo da parte de programação do projeto, sempre tentando colocar tudo no lugar, independente do método.</p>
+
+		<img src="images/nathy.png" class="foto" alt="Foto da participante do projeto Náthely Santana Teixeira.">
+		<p class="sobre-a-equipe"><strong>Náthely Santana Teixeira</strong>: Estudante de cinema de animação da UFPel, estou sendo responsável pela finalização das ilustrações do livro e da parte de animação. Muito feliz por fazer parte de um projeto que possa levar leitura de forma mais acessível para as crianças e incentivar suas imaginações para este mundo incrível que é o dos livros.</p>
+		<audio id="audio0" src=""></audio>
+	</div>
+	
+	<div id="div49" class="content">
+		<img src="images/roger.png" class="foto" alt="Foto do participante do projeto Roger da Silva De Matos.">
+		<p class="sobre-a-equipe"><strong>Roger da Silva De Matos</strong>: Estudante de Design Digital pela UFPel. Sou responsável pela parte de ilustração do projeto. Já tive a experiência de trabalhar com ilustração para o público infantil anteriormente em um Projeto de natação. Logo, a oportunidade de ilustrar para o Projeto Léia foi uma experiência gratificante, trabalhar para crianças novamente é maravilhoso, ver seu engajamento e estimular que ele aconteça é recompensador. A leitura e educação devem ser acessíveis para todos, e é muito importante para essas crianças adquirirem o gosto por ela, estimulando sua imaginação e influenciando seu futuro para um caminho de muitos aprendizados que adquiriram lendo livros. Fazer parte disso na vida delas é a maior motivação.</p>
+		
+		<img src="images/vitoria.png" class="foto" alt="Foto da participante do projeto Vitória Vieira Dos Santos.">
+		<p class="sobre-a-equipe"><strong>Vitória Vieira Dos Santos</strong>: Sou estudante de Design Digital pela Universidade Federal de Pelotas (UFPel) e atuo como autônoma nas áreas de design e marketing. Fui responsável por desenvolver a atividade interativa pós-leitura do projeto, criada para engajar as crianças de forma lúdica e significativa. Participar deste projeto foi ótimo. Unindo design e criatividade para impactar positivamente a vida das crianças.</p>
+		
+		<audio id="audio0" src=""></audio>
+	</div>
+
+    <!-- Botões -->
+    <button id="prevBtn" class="setas" onclick="changeContent(-1)"><img src="images/patinha-e.png" alt="ícone de uma patinha de cachorro virada para a direita" height="32"></button>
+    <button id="nextBtn" class="setas" onclick="changeContent(1)"><img src="images/patinha-d.png" alt="ícone de uma patinha de cachorro virada para a esquerda." height="32"></button>
+</div>
+</body>
+</html>

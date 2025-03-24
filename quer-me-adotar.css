@@ -1,0 +1,243 @@
+/* --- Outros (Layout, Containers, Botões, etc.) --- */
+body {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    position: relative;
+    color: #7D5537; /* texto marrom */
+}
+
+.container {
+    aspect-ratio: 9 / 16;
+    width: 100%;
+    max-width: 360px;
+    min-height: 88vh;
+    padding: 48px;
+    text-align: center;
+    position: relative;
+    background-color: #FBEBBC; /* fundo bege */
+    overflow: hidden;
+}
+
+@media (max-width: 768px) {
+    body {
+        margin: 0;
+        padding: 0;
+    }
+
+    .container {
+        position: relative;
+        align-items: center;
+        width: 100vw;
+        height: 100vh; 
+        max-width: none; 
+    }
+    .setas {
+        position: fixed;
+    }
+}
+
+.content {
+    display: none;
+}
+
+.content.active {
+    display: block;
+}
+
+.imprimir:hover {
+    background-color: #F3BA21;
+    color: white;
+}
+
+.setas {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 2rem;
+    background: none; 
+    border: none; 
+    cursor: pointer;
+    transition: transform 0.3s ease; 
+}
+
+.setas:hover {
+    color: #F3BA21; /* amarelo */
+}
+
+.setas:disabled {
+    cursor: not-allowed;
+}
+
+#prevBtn:active {
+    transform: translate(-10px, -50%); /* Move levemente para trás */
+}
+
+#nextBtn:active {
+    transform: translate(10px, -50%); /* Move levemente para frente */
+}
+
+#prevBtn {
+    left: 4px;
+}
+
+#nextBtn {
+    right: 4px;
+}
+
+#top-bar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    margin-bottom: 10px;
+}
+
+#top-bar button {
+    border: none;
+    background-color: #FBEBBC; /* fundo bege */
+}
+
+#top-bar button:hover {
+    opacity: .5;
+}
+
+/* --- Imagens --- */
+.ilustracao {
+    width: 100%; 
+    height: auto;
+    border-radius: 24px;
+}
+
+.ilus-entrada-capitulo {
+    position: absolute;
+    top: 90px;
+    left: 164px;
+}
+
+.livros {
+    height: 120px;
+    align-items: center;
+    padding: 8px;
+}
+
+.capa {
+    padding: 0;
+    margin: 0;
+    max-width: 100%;
+    height: auto;
+}
+
+.foto {
+    width: 35%; 
+    height: auto;
+    float: left;
+    padding: 8px;
+}
+
+#top-bar img {
+    width: 100%; /* Tamanho do ícone de volume */
+}
+
+/* --- Texto --- */
+.capitulos {
+    font-size: 25px;
+    font-family: "Sansita";
+    text-align: left;
+    color: #4F9FB2; /* texto azul */
+}
+
+a {
+    text-decoration: none;
+    color: #7D5537;
+}
+
+a:focus, a:active {
+    text-decoration: none; 
+    color: inherit;
+}
+
+p {
+    font-family: "Radley";
+    text-align: left;
+    font-size: 20px;
+    text-indent: 2em;
+    line-height: 1.5;
+    color: #7D5537;
+}
+
+h2 {
+    font-size: 30px;
+    text-align: center;
+    line-height: 1;
+    color: #4F9FB2; /* texto azul */
+}
+
+h3, h4, h5 {
+    font-size: 20px; /* h3 e h4 */
+    text-align: center;
+    line-height: 1;
+}
+
+h5 {
+    font-size: 16px;
+}
+
+.creditos, .creditos-16 {
+    font-family: "Radley";
+    text-align: center;
+    line-height: 1.5;
+    text-indent: 0;
+}
+
+.creditos {
+    font-size: 20px;
+}
+
+.creditos-16 {
+    font-size: 16px;
+}
+
+.sobre-a-equipe {
+    font-family: "Radley";
+    text-align: left;
+    font-size: 16px;
+    line-height: 1.5;
+    text-indent: 0;
+}
+
+a {
+    color: #357E8D; /* azul escuro */
+}
+
+.imprimir {
+    font-size: 20px;
+    background-color: #4F9FB2;
+    border: none;
+    padding: 8px 16px;
+    box-shadow: 0 2px 2px grey;
+    border-radius: 12px;
+}
+
+.imprimir a {
+    text-decoration: none;
+    color: white;
+}
+
+.lista {
+    font-family: "Radley";
+    text-align: left;
+    font-size: 20px;
+    line-height: 1.5;
+    color: #7D5537;
+}
+
+#page-number {
+    font-size: 20px;
+    font-family: "Sansita";
+    color: #357E8D;
+}
